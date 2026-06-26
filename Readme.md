@@ -6,7 +6,7 @@ Este proyecto es un gestor de inventario en python utilizado por consola que usa
 ## Funcionalidades
 Entre sus funcionalidades se encuentran:
 
-1. Agregar nuevos productos a la base de datos (con nombre, categoria, stock y precio)
+1. Agregar nuevos productos a la base de datos (con nombre, descripcion, categoria, stock y precio)
 2. Ver todos los productos de la base de datos
 3. Buscar productos (ya sea por su ID en la database o por semejanza de nombre)
 4. Eliminar productos mediante su ID
