@@ -18,6 +18,8 @@ Los inputs ingresados deben cumplir con restricciones manejadas en el modulo *va
 
 ## Instrucciones de Instalación
 
+**NOTA:** Si se tiene instalado el modulo Colorama de forma nativa en su pc, salteese los pasos 2, 3 y 4
+
 1. Clona este repositorio en tu máquina local.
    ```bash
    git clone https://github.com/RodrigoBedoya22/Proyecto-Final-Gestor-Inventario-Talento-Tech.git
@@ -31,11 +33,11 @@ Los inputs ingresados deben cumplir con restricciones manejadas en el modulo *va
        ```
        Esto pasa porque windows no permite la activacion de entorno virtuales por defecto (no sé por que la verdad)
    * En Linux/Mac: `source venv/bin/activate`
-5. Instala las dependencias necesarias (Si ya se posee el modulo Colorama, entonces saltearse este paso):
+4. Instala las dependencias necesarias (Si ya se posee el modulo Colorama, entonces saltearse este paso):
    ```bash
    pip install -r requirements.txt
    ```
-6. Con el entorno virtual activo y las dependencias descargadas, ejecutar:
+5. Con el entorno virtual activo y las dependencias descargadas, ejecutar:
    ```python
    python Proyecto-final.py
    ```
