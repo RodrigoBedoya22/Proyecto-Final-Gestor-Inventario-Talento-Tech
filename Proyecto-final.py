@@ -23,6 +23,7 @@ def iniciarBaseDeDatos():
     CREATE TABLE IF NOT EXISTS productos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nombre TEXT NOT NULL,
+        descripcion TEXT NOT NULL,
         categoria TEXT NOT NULL,
         stock INTEGER NOT NULL,
         precio REAL NOT NULL
@@ -46,7 +47,7 @@ def MostrarOpciones():
     print("\nPor favor, elija la accion que desea realizar:\n")
     # OPCIONES DISPONIBLES
     # 1 - Ingresar nuevo producto
-    print("1 - Ingresar nuevo producto (requiere nombre, categoria, stock y precio)")
+    print("1 - Ingresar nuevo producto (requiere nombre, descripcion, categoria, stock y precio)")
     # 2 - Ver productos ingresados
     print("2 - Ver todos los productos")
     # 3 - Buscar producto por su nombre
@@ -119,11 +120,12 @@ def AgregarNuevoProducto():
     print("Creando nuevo producto: \n")
 
     nombre_producto = IngresarNombreProducto()
+    descripcion_producto = IngresarDescripcionProducto()
     categoria_producto = IngresarCategoriaProducto()
     stock_producto = IngresarStockProducto()
     precio_producto = IngresarPrecioProducto()
 
-    datos_producto = (nombre_producto, categoria_producto, stock_producto, precio_producto)
+    datos_producto = (nombre_producto, descripcion_producto, categoria_producto, stock_producto, precio_producto)
 
     AgregarNuevoProductoABaseDeDatos(datos_producto)
 
@@ -138,6 +140,18 @@ def IngresarNombreProducto():
             return nombre_producto
         # Sino...
         ImprimirError("El nombre ingresado no es valido. (No debe ser vacio ni un numero). Por favor, intente otra vez...")
+
+def IngresarDescripcionProducto():
+    """
+    PROPOSITO: Pide al usuario ingresar la descripcion para un producto, si es valida la retorna, en caso contrario la vuelve a pedir.
+    """
+    while True:
+        descripcion_producto = input(Fore.GREEN + "\nIngrese la descripcion del producto: ").lower().strip() # normalizo entrada
+        if esDescripcionDeProductoValida(descripcion_producto):
+            #Si es valida, la retorno
+            return descripcion_producto
+        # Sino...
+        ImprimirError("La descripcion ingresada no es valida. (No debe ser vacio ni un numero). Por favor, intente otra vez...")
 
 def IngresarCategoriaProducto():
     """
@@ -190,7 +204,7 @@ def AgregarNuevoProductoABaseDeDatos(datos_producto):
     conexion = sq.connect(DATABASE)
     cursor = conexion.cursor()
 
-    cursor.execute("INSERT INTO productos (nombre, categoria, stock, precio) VALUES (?,?,?,?);", datos_producto)
+    cursor.execute("INSERT INTO productos (nombre, descripcion, categoria, stock, precio) VALUES (?,?,?,?,?);", datos_producto)
 
     conexion.commit() # guardar datos
     conexion.close()  # cerrar conexion
@@ -231,9 +245,10 @@ def MostrarProducto(producto):
     """
     print(Fore.GREEN + f"ID:\t\t{producto[0]}")
     print(f"Nombre:\t\t{producto[1]}")
-    print(f"Categoria:\t{producto[2]}")
-    print(f"Stock:\t\t{producto[3]}")
-    print(f"Precio:\t\t{producto[4]}")
+    print(f"Descripcion: \t{producto[2]}")
+    print(f"Categoria:\t{producto[3]}")
+    print(f"Stock:\t\t{producto[4]}")
+    print(f"Precio:\t\t{producto[5]}")
     print(LINEA)
     print(Style.RESET_ALL)
 
@@ -403,11 +418,12 @@ def ActualizarProducto():
             # Si esta...
             if producto_existe:
                 nombre_actual = producto_existe[1]
-                categoria_actual = producto_existe[2]
-                stock_actual = producto_existe[3]
-                precio_actual = producto_existe[4]
+                descripcion_actual = producto_existe[2]
+                categoria_actual = producto_existe[3]
+                stock_actual = producto_existe[4]
+                precio_actual = producto_existe[5]
 
-                datos_viejos = (nombre_actual, categoria_actual, stock_actual, precio_actual)
+                datos_viejos = (nombre_actual, descripcion_actual, categoria_actual, stock_actual, precio_actual)
 
                 datos_nuevos = PedirNuevosDatos(datos_viejos)
 
@@ -419,6 +435,7 @@ def ActualizarProducto():
                     actualizar_producto_de_id = """
                     UPDATE productos
                     SET nombre = ?,
+                        descripcion = ?,
                         categoria = ?,
                         stock = ?,
                         precio = ?
@@ -462,7 +479,7 @@ def PedirNuevosDatos(datos):
     print(f"Precio anterior:\t{datos[3]}\n")
 
     # Pido los nuevos
-    nuevo_nombre = input("Ingrese nuevo nombre (o presione Enter para quedarse con el antiguo dato): ").strip()
+    nuevo_nombre = input("Ingrese nuevo nombre (o presione Enter para quedarse con el antiguo dato): ").strip().lower()
     #========
     # NOMBRE
     if nuevo_nombre == "":
@@ -474,12 +491,24 @@ def PedirNuevosDatos(datos):
             ImprimirError("El nombre ingresado no es valido. (Debe ser un string no vacio y no numerico). Por favor, intente otra vez...")
             nuevo_nombre = IngresarNombreProducto()
 
-    nueva_categoria = input("Ingrese nueva categoria (o presione Enter para quedarse con el antiguo dato): ").strip()
+    #========
+    # DESCRIPCION
+    nueva_descripcion = input("Ingrese nueva descripcion (o presione Enter para quedarse con el antiguo dato): ").strip().lower()
+    if nueva_descripcion == "":
+        nueva_descripcion = datos[1]
+    else:
+        if esDescripcionDeProductoValida(nueva_descripcion):
+            pass
+        else:
+            ImprimirError("La descripcion ingresada no es valida. (Debe ser un string no vacio y no numerico). Por favor, intente otra vez...")
+            nueva_descripcion = IngresarDescripcionProducto()
 
     #=======
     # CATEGORIA
+    nueva_categoria = input("Ingrese nueva categoria (o presione Enter para quedarse con el antiguo dato): ").strip().lower()
+
     if nueva_categoria == "":
-        nueva_categoria = datos[1]
+        nueva_categoria = datos[2]
     else:
         if esCategoriaDeProductoValida(nueva_categoria):
             pass
@@ -492,7 +521,7 @@ def PedirNuevosDatos(datos):
     nuevo_stock = input("Ingrese nuevo stock (o presione Enter para quedarse con el antiguo dato): ").strip()
 
     if nuevo_stock == "":
-        nuevo_stock = datos[2]
+        nuevo_stock = datos[3]
     else:
         if esStockDeProductoValido(nuevo_stock):
             pass
@@ -505,7 +534,7 @@ def PedirNuevosDatos(datos):
     nuevo_precio = input("Ingrese nuevo precio (o presione Enter para quedarse con el antiguo dato): ").strip()
 
     if nuevo_precio == "":
-        nuevo_precio = datos[3]
+        nuevo_precio = datos[4]
     else:
         if esPrecioDeProductoValido(nuevo_precio):
             pass
@@ -513,16 +542,12 @@ def PedirNuevosDatos(datos):
             ImprimirError("El precio ingresado no es valido. (Debe ser un string no vacio, numerico y mayor a cero). Por favor, intente otra vez...")
             nuevo_stock = IngresarStockProducto()
     
-    return (nuevo_nombre, nueva_categoria, nuevo_stock, nuevo_precio)
+    return (nuevo_nombre, nueva_descripcion, nueva_categoria, nuevo_stock, nuevo_precio)
     
 
-
-
-
-
-
-
-# OPCION 0, SALIR DEL PROGRAMA
+#===============================================================================
+#===============================================================================
+# OPCION 0 - SALIR DEL PROGRAMA
 
 def SalirDelPrograma():
     """
@@ -536,6 +561,10 @@ def SalirDelPrograma():
 
     #termina el programa
     programa_funcionando = False # al ponerlo en false, se rompe el bucle while del programa
+
+#===============================================================================
+#===============================================================================
+# EJECUCION DEL PROGRAMA
 
 if __name__ == "__main__":
     iniciarBaseDeDatos()

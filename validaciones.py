@@ -46,6 +46,13 @@ def esNombreDeProductoValido(nombre:str) -> bool:
     """
     return (not esNumero(nombre)) and (not esVacio(nombre))
 
+def esDescripcionDeProductoValida(descripcion:str) -> bool:
+    """
+    PROPOSITO: Indica si la descripcion dada es una descripcion valida para un producto
+    NOTA: Se considera una descripcion valida a un string que no es vacio ni numerico
+    """
+    return (not esNumero(descripcion)) and (not esVacio(descripcion))
+
 def esCategoriaDeProductoValida(categoria:str) -> bool:
     """
     PROPOSITO: Indica si la categoria dada es una categoria valida para un producto
