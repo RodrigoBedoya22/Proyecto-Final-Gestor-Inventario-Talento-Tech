@@ -1,5 +1,20 @@
 # Gestor de Inventario - Talento Tech
 
+## Acerca del proyecto
+Este proyecto es un gestor de inventario en python utilizado por consola que usa el modulo **sqlite3** como base de datos para los productos y **Colorama** para poner colores a los outputs. 
+
+## Funcionalidades
+Entre sus funcionalidades se encuentran:
+
+1. Agregar nuevos productos a la base de datos (con nombre, categoria, stock y precio)
+2. Ver todos los productos de la base de datos
+3. Buscar productos (ya sea por su ID en la database o por semejanza de nombre)
+4. Eliminar productos mediante su ID
+5. Actualizar productos mediante su ID
+0. Terminar el programa
+
+Los inputs ingresados deben cumplir con restricciones manejadas en el modulo *validaciones.py* del mismo proyecto
+
 ## Instrucciones de Instalación
 
 1. Clona este repositorio en tu máquina local.
@@ -24,4 +39,19 @@
    python Proyecto-final.py
    ```
    Y con esto estaria funcionando.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
