@@ -11,6 +11,7 @@ Entre sus funcionalidades se encuentran:
 3. Buscar productos (ya sea por su ID en la database o por semejanza de nombre)
 4. Eliminar productos mediante su ID
 5. Actualizar productos mediante su ID
+6. Reporte de productos (pide al usuario una cantidad de stock y muestra en consola todos los porductos que tengan igual o menor stock al dado)
 0. Terminar el programa
 
 Los inputs ingresados deben cumplir con restricciones manejadas en el modulo *validaciones.py* del mismo proyecto

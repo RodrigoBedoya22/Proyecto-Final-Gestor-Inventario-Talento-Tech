@@ -7,7 +7,7 @@ from validaciones import *
 from colorama import Fore, Style 
 
 LINEA = "="*60              # esto me va a ayudar a separar un poco los prints
-OPCIONES_OFRECIDAS = 5      # Sin contar la opcion de salir (que seria el 0)
+OPCIONES_OFRECIDAS = 6      # Sin contar la opcion de salir (que seria el 0)
 DATABASE = "inventario.db"  # nombre de la base de datos (siempre va a ser igual para la consigna)
 programa_funcionando = True # una variable que permite cortar el programa si se desea
 
@@ -56,6 +56,8 @@ def MostrarOpciones():
     print("4 - Eliminar producto especifico (ingresar ID del producto)") 
     # 5 - Actualizar producto especifico
     print("5 - Actualizar producto especifico (ingresar ID del producto)")
+    # 6- Reporte de productos
+    print("6 - Reporte de productos (requiere stock). Muestra aquellos productos con stock <= al dado")
     # 0 - Salir
     print("0 - Salir")
     print(Style.RESET_ALL)
@@ -102,6 +104,10 @@ def SeleccionarOpcion(opcion_elegida):
     elif opcion_elegida == 5:
         # ACTUALIZAR PRODUCTO ESPECIFICO, por id
         ActualizarProducto()
+
+    elif opcion_elegida == 6:
+        # REPORTAR TODOS LOS PRODUCTOS CON STOCK MENOR O IGUAL AL ESPECIFICADO
+        ReporteDeProductos()
 
     elif opcion_elegida == 0:
         # SALIR
@@ -544,6 +550,40 @@ def PedirNuevosDatos(datos):
     
     return (nuevo_nombre, nueva_descripcion, nueva_categoria, nuevo_stock, nuevo_precio)
     
+#===============================================================================
+#===============================================================================
+# OPCION 6 - REPORTE DE PRODUCTOS
+
+def ReporteDeProductos():
+    """
+    PROPOSITO: Pide al usuario ingresar una cantidad de stock y muestra en consola todos aquellos productos que tengan un stock igual o menor al dado.
+    """
+    print(Fore.GREEN + LINEA)
+    while True:
+        stock_limite = input("Ingrese el stock limite a buscar: ")
+        if esStockDeProductoValido(stock_limite):
+            stock_limite = int(stock_limite) #normalizo
+
+            conexion = sq.connect(DATABASE)
+            cursor = conexion.cursor()
+
+            consulta = "SELECT * FROM productos WHERE stock <= ?;"
+
+            cursor.execute(consulta, (stock_limite,))
+            productos = cursor.fetchall()
+
+            if productos: # si hay al menos uno
+                print(f"\nTodos los productos con stock <= {stock_limite}: \n")
+                MostrarProductos(productos)
+                break
+            
+            else:
+                ImprimirError("No se encontraron productos.")
+                break
+
+        # Si el stock no fue valido, se lo vuelve a pedir
+        ImprimirError("El stock ingresado no es valido. (Debe ser un string no vacio, numerico y mayor o igual a cero). Por favor, intente otra vez...")
+            
 
 #===============================================================================
 #===============================================================================
